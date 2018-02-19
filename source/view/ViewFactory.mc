@@ -17,14 +17,14 @@ module view {
                 case Model.VIEW_DISTANCE:
                     return new DistanceView();
                     break;
-                case Model.VIEW_BATTERY_REMAINING:
-                    return new BatteryRemainingView();
+                case Model.VIEW_TIME_OF_DAY:
+                    return new TimeOfDayView();
                     break;
                 case Model.VIEW_BATTERY_PERCENTAGE:
                     return new BatteryPercentageView();
                     break;
-                case Model.VIEW_TIME_OF_DAY:
-                    return new TimeOfDayView();
+                case Model.VIEW_BATTERY_REMAINING:
+                    return new BatteryRemainingView();
                     break;
             }
         }

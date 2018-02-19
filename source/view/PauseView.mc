@@ -31,7 +31,7 @@ module view {
         function onUpdate(dc) {
             View.onUpdate(dc);
             var gpsQuality = _model.getGpsQuality();
-            var messageFormat = _model.hasStarted() ? Ui.loadResource(Rez.Strings.welcome_format) : Ui.loadResource(Rez.Strings.resume_format);
+            var messageFormat = !_model.hasStarted() ? Ui.loadResource(Rez.Strings.welcome_format) : Ui.loadResource(Rez.Strings.resume_format);
             var welcomeString = Lang.format(messageFormat, [getGpsQualityText(gpsQuality)]);
             dc.setColor(gpsQuality == Position.QUALITY_GOOD ? Graphics.COLOR_GREEN : Graphics.COLOR_ORANGE, Graphics.COLOR_TRANSPARENT);
             drawTextAndData(dc, welcomeString, "", _posDetails.CentreColumn, _posDetails.CentreRow);
