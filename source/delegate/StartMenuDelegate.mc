@@ -20,7 +20,7 @@ module delegate {
             if (item == :start) {
                 _controller.start();
                 return true;
-            } else if (item == :select) {
+            } else if (item == :select_activity) {
                 _controller.onSelectActivity();
                 return true;
             } else if (item == :select_gps) {
