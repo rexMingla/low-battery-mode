@@ -24,7 +24,7 @@ module view {
 
         function onShow() {
             Ui.requestUpdate();
-            _timer.start(method(:onTimer), 1000, true);
+            _timer.start(method(:onTimer), 60 * 1000, true);
         }
 
         // Update the view
