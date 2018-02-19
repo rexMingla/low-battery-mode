@@ -1,0 +1,43 @@
+<strings>
+    <string id="AppName">Battery Helper</string>
+
+    <!-- menus -->
+    <string id="menu_start">Start</string>
+    <string id="menu_select_activity">Select Activity</string>
+
+    <string id="menu_resume">Resume</string>
+    <string id="menu_save">Save</string>
+    <string id="menu_discard">Discard</string>
+
+    <string id="menu_sensor">Sensor Settings</string>
+    <string id="menu_gps">GPS Settings</string>
+    
+    <string id="menu_config_always">Always</string>
+    <string id="menu_config_never">Never</string>
+    <string id="menu_config_custom5sec">5 secs</string>
+    <string id="menu_config_custom10sec">10 secs</string>
+    <string id="menu_config_custom30sec">30 secs</string>
+    <string id="menu_config_custom60sec">1 min</string>
+
+    <string id="menu_activity_title">Select Activity</string>
+    <string id="menu_activity_run">Run</string>
+    <string id="menu_activity_bike">Bike</string>
+    <string id="menu_activity_swim">Swim</string>
+    <string id="menu_activity_other">Other</string>
+    
+    <!-- labels -->
+    <string id="view_time_of_day">Time of day</string>
+    <string id="view_dist">Distance</string>
+    <string id="view_time">Time (hh:mm)</string>
+    <string id="view_battery_percentage">Battery %</string>
+    <string id="view_battery_remaining">Battery Remaining</string>
+    
+    <!-- gps labels -->
+    <string id="gps_good">Good</string> 
+    <string id="gps_ok">OK</string>
+    <string id="gps_poor">Poor</string>
+    
+    <!-- lap labels -->
+    <string id="welcome_format">GPS Signal: $1$\nPress Start To Begin</string>
+    <string id="resume_format">GPS Signal: $1$\nPress Start To Resume</string>
+</strings>
