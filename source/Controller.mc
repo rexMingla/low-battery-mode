@@ -112,6 +112,9 @@ class Controller {
     }
 
     function cycleView(offset) {
+        if (!_model.hasStarted()) {
+            return ;
+        }
         var index = _model.cycleView(offset);
         WatchUi.switchToView(view.ViewFactory.createView(_model.getCurrentViewIndex()), new delegate.MainDelegate(), WatchUi.SLIDE_DOWN);
         WatchUi.requestUpdate();
