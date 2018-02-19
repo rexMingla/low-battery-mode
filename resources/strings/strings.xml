@@ -1,5 +1,5 @@
 <strings>
-    <string id="AppName">Battery Helper</string>
+    <string id="AppName">Low Battery Mode</string>
 
     <!-- menus -->
     <string id="menu_start">Start</string>
