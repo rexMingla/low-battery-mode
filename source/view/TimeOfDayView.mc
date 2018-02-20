@@ -10,7 +10,7 @@ module view {
         }
 
         protected function getValue() {
-            var now = System.getClockTime();
+            var now = _model.getTimeOfDay();
             return data.Formatter.getTime(now.hour % _timeDisplayModulus, now.min);
         }
 

@@ -4,6 +4,7 @@ using Toybox.System;
 using Toybox.Attention;
 using Toybox.FitContributor;
 using Toybox.ActivityRecording;
+using Toybox.Time;
 
 class Model
 {
@@ -13,7 +14,7 @@ class Model
     hidden var _speedConversion;
 
     // leave off remaining time for now..
-    hidden var _views = [VIEW_TIME, VIEW_DISTANCE, VIEW_TIME_OF_DAY, VIEW_BATTERY_PERCENTAGE];
+    hidden var _views = [VIEW_TIME, VIEW_DISTANCE, VIEW_TIME_OF_DAY, VIEW_BATTERY_REMAINING, VIEW_BATTERY_PERCENTAGE];
     hidden var _currentViewIndex;
 
     hidden var _gpsRefreshInfo;
@@ -21,6 +22,9 @@ class Model
 
     hidden var _customGpsTimer;
     hidden var _customSensorTimer;
+
+    hidden var _startBatteryTime;
+    hidden var _startBatteryPercentage;
 
     hidden const KmsToMiles = 0.621371;
 
@@ -73,6 +77,7 @@ class Model
         } else {
             onStartGetOneShotGpsData();
         }
+        onBatteryProfileChanged();
     }
 
     function setSensorRefreshInfo(info) {
@@ -84,6 +89,7 @@ class Model
         } else {
             onStartGetOneShotSensorData();
         }
+        onBatteryProfileChanged();
     }
 
     // session management
@@ -146,8 +152,23 @@ class Model
         return System.getSystemStats().battery;
     }
 
+    function onBatteryProfileChanged() {
+        _startBatteryTime = Time.now().value();
+        _startBatteryPercentage = getBatteryPercentage();
+    }
+
+    function getTimeOfDay() {
+        return System.getClockTime();
+    }
+
     function getBatteryRemainingMinutes() {
-        return 42 * 60; // TODO
+        var timeDelta = new Time.Moment(_startBatteryTime).subtract(new Time.Moment(Time.now().value()));
+        var percentage = getBatteryPercentage();
+        if (timeDelta.lessThan(new Time.Duration(60)) || percentage == _startBatteryPercentage) {
+            return "--";
+        }
+        var remainingSeconds = 100 * (percentage - _startBatteryPercentage) / timeDelta.value();
+        return new Time.Moment(remainingSeconds / 60);
     }
 
     function getGpsQuality() {
@@ -169,7 +190,7 @@ class Model
 
     private function onEndGetOneShotGpsData(info) {
         Position.enableLocationEvents(Position.DISABLE, method(:noOp));
-        _customGpsTimer.start(method(:onStartGetOneShotGpsData), _gpsRefreshInfo.RefreshRateSeconds * 1000, true);
+        _customGpsTimer.start(method(:onStartGetOneShotGpsData), _gpsRefreshInfo.RefreshRateSeconds * 1000, false);
     }
 
     private function onStartGetOneShotSensorData() {
