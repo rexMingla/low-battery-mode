@@ -68,28 +68,31 @@ class Model
 
     function setGpsRefreshInfo(info) {
         _gpsRefreshInfo = info;
+        _customGpsTimer.stop();
+        onBatteryProfileChanged();
+
         if (info.RefreshRate == data.RefreshInfo.REFRESH_RATE_ALWAYS) {
             Position.enableLocationEvents(Position.LOCATION_CONTINUOUS, method(:noOp));
-            _customGpsTimer.stop();
-        } else if (info.RefreshRate == data.RefreshInfo.REFRESH_RATE_NEVER) {
-            Position.enableLocationEvents(Position.LOCATION_DISABLE, method(:noOp));
-            _customGpsTimer.stop();
-        } else {
+            return;
+        }
+        Position.enableLocationEvents(Position.LOCATION_DISABLE, method(:noOp));
+        if (info.RefreshRate == data.RefreshInfo.REFRESH_RATE_CUSTOM) {
             onStartGetOneShotGpsData();
         }
-        onBatteryProfileChanged();
     }
 
     function setSensorRefreshInfo(info) {
         _sensorRefreshInfo = info;
+        onBatteryProfileChanged();
+
         if (info.RefreshRate == data.RefreshInfo.REFRESH_RATE_ALWAYS) {
             Sensor.setEnabledSensors(mAllSensorsByActivityType[_activity]);
-        } else if (info.RefreshRate == data.RefreshInfo.REFRESH_RATE_NEVER) {
-            Sensor.setEnabledSensors([]);
-        } else {
+            return;
+        }
+        Sensor.setEnabledSensors([]);
+        if (info.RefreshRate == data.RefreshInfo.REFRESH_RATE_CUSTOM) {
             onStartGetOneShotSensorData();
         }
-        onBatteryProfileChanged();
     }
 
     // session management
@@ -153,7 +156,7 @@ class Model
     }
 
     function onBatteryProfileChanged() {
-        _startBatteryTime = Time.now().value();
+        _startBatteryTime = Time.now();
         _startBatteryPercentage = getBatteryPercentage();
     }
 
@@ -161,14 +164,13 @@ class Model
         return System.getClockTime();
     }
 
-    function getBatteryRemainingMinutes() {
-        var timeDelta = new Time.Moment(_startBatteryTime).subtract(new Time.Moment(Time.now().value()));
+    function getBatteryRemainingMins() {
+        var timeDelta = _startBatteryTime.subtract(Time.now());
         var percentage = getBatteryPercentage();
         if (timeDelta.lessThan(new Time.Duration(60)) || percentage == _startBatteryPercentage) {
             return "--";
         }
-        var remainingSeconds = 100 * (percentage - _startBatteryPercentage) / timeDelta.value();
-        return new Time.Moment(remainingSeconds / 60);
+        return (timeDelta.value() * percentage * (_startBatteryPercentage - percentage) / 60).toNumber();
     }
 
     function getGpsQuality() {

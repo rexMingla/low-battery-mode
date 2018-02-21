@@ -8,7 +8,7 @@ module view {
         }
 
         protected function getValue() {
-           return data.Formatter.getTimeFromSecs(_model.getBatteryRemainingMinutes());
+           return data.Formatter.getTimeFromMins(_model.getBatteryRemainingMins());
         }
 
         protected function getLabel() {

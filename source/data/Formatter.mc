@@ -44,9 +44,17 @@ module data {
             return "-:--";
         }
 
-        static function getTime(hours, mins) {
+        static function getTimeFromMins(secs) {
             try {
-                return Lang.format("$1$:$2$", [hours.format("%d"), mins.format("%02d")]);
+                return getTime(secs / 60, secs % 60);
+            } catch (ex) {
+            }
+            return "-:--";
+        }
+
+        static function getTime(units, unitsMod60) {
+            try {
+                return Lang.format("$1$:$2$", [units.format("%d"), unitsMod60.format("%02d")]);
             } catch (ex) {
             }
             return "-:--";
