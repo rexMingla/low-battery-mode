@@ -32,19 +32,29 @@ module view {
 
         function onShow() {
             Ui.requestUpdate();
-            _timer.start(method(:onTimer), 60 * 1000, true);
         }
 
         // Update the view
         function onUpdate(dc) {
-            var value = getValue();
-            if (value == _cachedValue) {
+            if (!_model.isRunning()) {
+                View.onUpdate(dc);
+                var gpsQuality = _model.getGpsQuality();
+                var messageFormat = !_model.hasStarted() ? Ui.loadResource(Rez.Strings.welcome_format) : Ui.loadResource(Rez.Strings.resume_format);
+                var welcomeString = Lang.format(messageFormat, [getGpsQualityText(gpsQuality)]);
+                dc.setColor(gpsQuality == Position.QUALITY_GOOD ? Graphics.COLOR_GREEN : Graphics.COLOR_ORANGE, Graphics.COLOR_TRANSPARENT);
+                drawTextAndData(dc, welcomeString, "", _posDetails.CentreColumn, _posDetails.CentreRow);
+                _timer.start(method(:onTimer), 1000, false);
                 return;
             }
-            _cachedValue = value;
-            View.onUpdate(dc);
-            dc.setColor(Graphics.COLOR_WHITE, Graphics.COLOR_TRANSPARENT);
-            drawTextAndData(dc, getLabel(), _cachedValue, _posDetails.CentreColumn, _posDetails.CentreRow);
+
+            var value = getValue();
+            if (value != _cachedValue) {
+                _cachedValue = value;
+                View.onUpdate(dc);
+                dc.setColor(Graphics.COLOR_WHITE, Graphics.COLOR_TRANSPARENT);
+                drawTextAndData(dc, getLabel(), _cachedValue, _posDetails.CentreColumn, _posDetails.CentreRow);
+            }
+            _timer.start(method(:onTimer), 60 * 1000, false);
         }
 
         private function drawTextAndData(dc, label, data, x, y) {
@@ -62,6 +72,15 @@ module view {
         // Handler for the _timer callback
         function onTimer() {
             Ui.requestUpdate();
+        }
+
+        private function getGpsQualityText(quality) {
+            if (quality == Position.QUALITY_GOOD) {
+                return Ui.loadResource(Rez.Strings.gps_good);
+            } else if (quality == Position.QUALITY_USABLE) {
+                return Ui.loadResource(Rez.Strings.gps_ok);
+            }
+            return Ui.loadResource(Rez.Strings.gps_poor);
         }
     }
 }

@@ -19,7 +19,7 @@ class BatteryApp extends App.AppBase {
     }
 
     function getInitialView() {
-        return [ new view.PauseView(), new delegate.MainDelegate() ];
+        return [ new view.TimeOfDayView(), new delegate.MainDelegate() ];
     }
 
     function getController() {

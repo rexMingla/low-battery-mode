@@ -34,12 +34,12 @@ class Controller {
     function start() {
         performAttention(Attention has :TONE_START ? Attention.TONE_START : null);
         _model.start();
-        WatchUi.switchToView(view.ViewFactory.createView(_model.getCurrentViewIndex()), new delegate.MainDelegate(), WatchUi.SLIDE_DOWN);
     }
 
     function resume() {
         performAttention(Attention has :TONE_START ? Attention.TONE_START : null);
         _model.resume();
+        WatchUi.requestUpdate();
     }
 
     function stop() {
@@ -77,10 +77,15 @@ class Controller {
             stop();
             WatchUi.pushView(new Rez.Menus.PausedMenu(), new delegate.PausedMenuDelegate(), WatchUi.SLIDE_UP);
         }
+        WatchUi.requestUpdate();
     }
 
     function onStartActivity() {
         WatchUi.pushView(new Rez.Menus.StartMenu(), new delegate.StartMenuDelegate(), WatchUi.SLIDE_UP);
+    }
+
+    function onResumeActivity() {
+        cycleView(0);
     }
 
     function onSelectActivity() {
@@ -115,7 +120,7 @@ class Controller {
         if (!_model.hasStarted()) {
             return ;
         }
-        var index = _model.cycleView(offset);
+        _model.cycleView(offset);
         WatchUi.switchToView(view.ViewFactory.createView(_model.getCurrentViewIndex()), new delegate.MainDelegate(), WatchUi.SLIDE_DOWN);
         WatchUi.requestUpdate();
     }

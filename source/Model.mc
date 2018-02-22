@@ -14,7 +14,7 @@ class Model
     hidden var _speedConversion;
 
     // leave off remaining time for now..
-    hidden var _views = [VIEW_TIME, VIEW_DISTANCE, VIEW_TIME_OF_DAY, VIEW_BATTERY_REMAINING, VIEW_BATTERY_PERCENTAGE];
+    hidden var _views = [VIEW_TIME_OF_DAY, VIEW_TIME, VIEW_DISTANCE, VIEW_BATTERY_REMAINING, VIEW_BATTERY_PERCENTAGE];
     hidden var _currentViewIndex;
 
     hidden var _gpsRefreshInfo;
@@ -29,9 +29,9 @@ class Model
     hidden const KmsToMiles = 0.621371;
 
     enum {
+       VIEW_TIME_OF_DAY,
        VIEW_TIME,
        VIEW_DISTANCE,
-       VIEW_TIME_OF_DAY,
        VIEW_BATTERY_REMAINING,
        VIEW_BATTERY_PERCENTAGE
     }
@@ -188,20 +188,25 @@ class Model
 
     private function onStartGetOneShotGpsData() {
         Position.enableLocationEvents(Position.LOCATION_ONE_SHOT, method(:onEndGetOneShotGpsData));
+        //System.println("gps on");
     }
 
     private function onEndGetOneShotGpsData(info) {
-        Position.enableLocationEvents(Position.DISABLE, method(:noOp));
+        Position.enableLocationEvents(Position.LOCATION_DISABLE, method(:noOp));
         _customGpsTimer.start(method(:onStartGetOneShotGpsData), _gpsRefreshInfo.RefreshRateSeconds * 1000, false);
+        //System.println("gps off");
     }
 
     private function onStartGetOneShotSensorData() {
         Sensor.setEnabledSensors(mAllSensorsByActivityType[_activity]);
         Sensor.enableSensorEvents(method(:onEndGetOneShotSensorData));
+        //System.println("sensors on");
     }
 
     private function onEndGetOneShotSensorData(info) {
+        Sensor.enableSensorEvents(method(:noOp));
         Sensor.setEnabledSensors([]);
         _customGpsTimer.start(method(:onStartGetOneShotSensorData), _sensorRefreshInfo.RefreshRateSeconds * 1000, false);
+        //System.println("sensors off");
     }
 }

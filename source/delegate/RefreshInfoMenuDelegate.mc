@@ -23,16 +23,16 @@ module delegate {
             } else if (item == :never) {
                 setRefreshInfo(new data.RefreshInfo(data.RefreshInfo.REFRESH_RATE_NEVER, null));
                 return true;
-            } else if (item == :custom5Sec) {
+            } else if (item == :customFiveSec) {
                 setRefreshInfo(new data.RefreshInfo(data.RefreshInfo.REFRESH_RATE_CUSTOM, 5));
                 return true;
-            } else if (item == :custom10Sec) {
+            } else if (item == :customTenSec) {
                 setRefreshInfo(new data.RefreshInfo(data.RefreshInfo.REFRESH_RATE_CUSTOM, 10));
                 return true;
-            } else if (item == :custom30Sec) {
+            } else if (item == :customThirtySec) {
                 setRefreshInfo(new data.RefreshInfo(data.RefreshInfo.REFRESH_RATE_CUSTOM, 30));
                 return true;
-            } else if (item == :custom60Sec) {
+            } else if (item == :customSixtySec) {
                 setRefreshInfo(new data.RefreshInfo(data.RefreshInfo.REFRESH_RATE_CUSTOM, 60));
                 return true;
             }
@@ -40,7 +40,7 @@ module delegate {
         }
 
         private function setRefreshInfo(info) {
-            if (_type == data.RefreshRate.REFRESH_TYPE_GPS) {
+            if (_type == data.RefreshInfo.REFRESH_TYPE_GPS) {
                 _controller.setGpsRefreshInfo(info);
             } else {
                 _controller.setSensorRefreshInfo(info);
