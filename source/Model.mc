@@ -27,6 +27,7 @@ class Model
     hidden var _startBatteryPercentage;
 
     hidden const KmsToMiles = 0.621371;
+    hidden const PrintDebugMessages = true;
 
     enum {
        VIEW_TIME_OF_DAY,
@@ -83,6 +84,7 @@ class Model
 
     function setSensorRefreshInfo(info) {
         _sensorRefreshInfo = info;
+        _customSensorTimer.stop();
         onBatteryProfileChanged();
 
         if (info.RefreshRate == data.RefreshInfo.REFRESH_RATE_ALWAYS) {
@@ -187,26 +189,36 @@ class Model
     }
 
     private function onStartGetOneShotGpsData() {
-        Position.enableLocationEvents(Position.LOCATION_ONE_SHOT, method(:onEndGetOneShotGpsData));
-        //System.println("gps on");
+        Position.enableLocationEvents(Position.LOCATION_CONTINUOUS, method(:onEndGetOneShotGpsData));
+        printDebug("gps on");
     }
 
     private function onEndGetOneShotGpsData(info) {
+        if (getGpsQuality() < Position.QUALITY_USABLE) {
+            printDebug("waiting for better GPS...");
+            return;
+        }
         Position.enableLocationEvents(Position.LOCATION_DISABLE, method(:noOp));
         _customGpsTimer.start(method(:onStartGetOneShotGpsData), _gpsRefreshInfo.RefreshRateSeconds * 1000, false);
-        //System.println("gps off");
+        printDebug("gps off");
     }
 
     private function onStartGetOneShotSensorData() {
         Sensor.setEnabledSensors(mAllSensorsByActivityType[_activity]);
         Sensor.enableSensorEvents(method(:onEndGetOneShotSensorData));
-        //System.println("sensors on");
+        printDebug("sensors on");
     }
 
     private function onEndGetOneShotSensorData(info) {
         Sensor.enableSensorEvents(method(:noOp));
         Sensor.setEnabledSensors([]);
-        _customGpsTimer.start(method(:onStartGetOneShotSensorData), _sensorRefreshInfo.RefreshRateSeconds * 1000, false);
-        //System.println("sensors off");
+        _customSensorTimer.start(method(:onStartGetOneShotSensorData), _sensorRefreshInfo.RefreshRateSeconds * 1000, false);
+        printDebug("sensors off");
+    }
+
+    private function printDebug(message) {
+        if (PrintDebugMessages) {
+            System.println(message);
+        }
     }
 }
