@@ -27,7 +27,7 @@ class Model
     hidden var _startBatteryPercentage;
 
     hidden const KmsToMiles = 0.621371;
-    hidden const PrintDebugMessages = true;
+    hidden const PrintDebugMessages = false;
 
     enum {
        VIEW_TIME_OF_DAY,
