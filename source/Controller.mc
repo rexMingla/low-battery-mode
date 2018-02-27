@@ -23,14 +23,6 @@ class Controller {
         _model.setActivity(activity);
     }
 
-    function setGpsRefreshInfo(info) {
-        _model.setGpsRefreshInfo(info);
-    }
-
-    function setSensorRefreshInfo(info) {
-        _model.setSensorRefreshInfo(info);
-    }
-
     function start() {
         performAttention(Attention has :TONE_START ? Attention.TONE_START : null);
         _model.start();
@@ -92,14 +84,6 @@ class Controller {
         WatchUi.pushView(new Rez.Menus.ActivityMenu(), new delegate.ActivityMenuDelegate(), WatchUi.SLIDE_UP);
     }
 
-    function onSelectGpsMode() {
-        WatchUi.pushView(new Rez.Menus.RefreshInfoMenu(), new delegate.RefreshInfoMenuDelegate(data.RefreshInfo.REFRESH_TYPE_GPS), WatchUi.SLIDE_UP);
-    }
-
-    function onSelectSensorMode() {
-        WatchUi.pushView(new Rez.Menus.RefreshInfoMenu(), new delegate.RefreshInfoMenuDelegate(data.RefreshInfo.REFRESH_TYPE_SENSOR), WatchUi.SLIDE_UP);
-    }
-
     function isRunning() {
         return _model.isRunning();
     }
@@ -109,6 +93,7 @@ class Controller {
     }
 
     function onLap() {
+        performAttention(Attention has :TONE_LAP ? Attention.TONE_LAP : null);
         _model.startLap();
     }
 

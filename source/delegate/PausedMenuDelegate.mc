@@ -24,12 +24,6 @@ module delegate {
             } else if (item == :discard) {
                 _controller.discard();
                 return true;
-            } else if (item == :select_gps) {
-                _controller.onSelectGpsMode();
-                return true;
-            } else if (item == :select_sensor) {
-                _controller.onSelectSensorMode();
-                return true;
             }
             return false;
         }

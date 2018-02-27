@@ -14,14 +14,11 @@ class Model
     hidden var _speedConversion;
 
     // leave off remaining time for now..
-    hidden var _views = [VIEW_TIME_OF_DAY, VIEW_TIME, VIEW_DISTANCE, VIEW_BATTERY_REMAINING, VIEW_BATTERY_PERCENTAGE];
+    hidden var _views = [VIEW_TIME_OF_DAY, VIEW_TIME, VIEW_DISTANCE, VIEW_BATTERY_PERCENTAGE, VIEW_BATTERY_REMAINING];
     hidden var _currentViewIndex;
 
     hidden var _gpsRefreshInfo;
     hidden var _sensorRefreshInfo;
-
-    hidden var _customGpsTimer;
-    hidden var _customSensorTimer;
 
     hidden var _startBatteryTime;
     hidden var _startBatteryPercentage;
@@ -33,8 +30,8 @@ class Model
        VIEW_TIME_OF_DAY,
        VIEW_TIME,
        VIEW_DISTANCE,
-       VIEW_BATTERY_REMAINING,
-       VIEW_BATTERY_PERCENTAGE
+       VIEW_BATTERY_PERCENTAGE,
+       VIEW_BATTERY_REMAINING
     }
 
     hidden static var mAllSensorsByActivityType = {
@@ -51,50 +48,14 @@ class Model
         _isRunning = false;
         _currentViewIndex = 0;
 
-        _customGpsTimer = new Timer.Timer();
-        _customSensorTimer = new Timer.Timer();
-
         setActivity(ActivityRecording.SPORT_RUNNING);
-        setGpsRefreshInfo(new data.RefreshInfo(data.RefreshInfo.REFRESH_RATE_ALWAYS, null));
-        setSensorRefreshInfo(new data.RefreshInfo(data.RefreshInfo.REFRESH_RATE_ALWAYS, null));
     }
 
     // config.. activity, gps, sensor setup
     function setActivity(activity) {
         _activity = activity;
-        if (_gpsRefreshInfo != null) {
-            setSensorRefreshInfo(_gpsRefreshInfo);
-        }
-    }
-
-    function setGpsRefreshInfo(info) {
-        _gpsRefreshInfo = info;
-        _customGpsTimer.stop();
+        Sensor.setEnabledSensors(mAllSensorsByActivityType[_activity]);
         onBatteryProfileChanged();
-
-        if (info.RefreshRate == data.RefreshInfo.REFRESH_RATE_ALWAYS) {
-            Position.enableLocationEvents(Position.LOCATION_CONTINUOUS, method(:noOp));
-            return;
-        }
-        Position.enableLocationEvents(Position.LOCATION_DISABLE, method(:noOp));
-        if (info.RefreshRate == data.RefreshInfo.REFRESH_RATE_CUSTOM) {
-            onStartGetOneShotGpsData();
-        }
-    }
-
-    function setSensorRefreshInfo(info) {
-        _sensorRefreshInfo = info;
-        _customSensorTimer.stop();
-        onBatteryProfileChanged();
-
-        if (info.RefreshRate == data.RefreshInfo.REFRESH_RATE_ALWAYS) {
-            Sensor.setEnabledSensors(mAllSensorsByActivityType[_activity]);
-            return;
-        }
-        Sensor.setEnabledSensors([]);
-        if (info.RefreshRate == data.RefreshInfo.REFRESH_RATE_CUSTOM) {
-            onStartGetOneShotSensorData();
-        }
     }
 
     // session management
@@ -186,34 +147,6 @@ class Model
 
     // sensor and gps callbacks
     private function noOp(info) {
-    }
-
-    private function onStartGetOneShotGpsData() {
-        Position.enableLocationEvents(Position.LOCATION_CONTINUOUS, method(:onEndGetOneShotGpsData));
-        printDebug("gps on");
-    }
-
-    private function onEndGetOneShotGpsData(info) {
-        if (getGpsQuality() < Position.QUALITY_USABLE) {
-            printDebug("waiting for better GPS...");
-            return;
-        }
-        Position.enableLocationEvents(Position.LOCATION_DISABLE, method(:noOp));
-        _customGpsTimer.start(method(:onStartGetOneShotGpsData), _gpsRefreshInfo.RefreshRateSeconds * 1000, false);
-        printDebug("gps off");
-    }
-
-    private function onStartGetOneShotSensorData() {
-        Sensor.setEnabledSensors(mAllSensorsByActivityType[_activity]);
-        Sensor.enableSensorEvents(method(:onEndGetOneShotSensorData));
-        printDebug("sensors on");
-    }
-
-    private function onEndGetOneShotSensorData(info) {
-        Sensor.enableSensorEvents(method(:noOp));
-        Sensor.setEnabledSensors([]);
-        _customSensorTimer.start(method(:onStartGetOneShotSensorData), _sensorRefreshInfo.RefreshRateSeconds * 1000, false);
-        printDebug("sensors off");
     }
 
     private function printDebug(message) {

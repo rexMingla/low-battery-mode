@@ -1,8 +1,0 @@
-<menu id="RefreshInfoMenu">
-    <menu-item id="always" label="@Strings.menu_config_always"></menu-item>
-    <menu-item id="never" label="@Strings.menu_config_never"></menu-item>
-    <menu-item id="customFiveSec" label="@Strings.menu_config_custom5sec"></menu-item>
-    <menu-item id="customTenSec" label="@Strings.menu_config_custom10sec"></menu-item>
-    <menu-item id="customThirtySec" label="@Strings.menu_config_custom30sec"></menu-item>
-    <menu-item id="customSixtySec" label="@Strings.menu_config_custom60sec"></menu-item>
-</menu>

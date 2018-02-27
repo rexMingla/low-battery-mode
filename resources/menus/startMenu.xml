@@ -1,6 +1,4 @@
 <menu id="StartMenu">
     <menu-item id="start" label="@Strings.menu_start"></menu-item>
     <menu-item id="select_activity" label="@Strings.menu_select_activity"></menu-item>
-    <menu-item id="select_gps" label="@Strings.menu_gps"></menu-item>
-    <menu-item id="select_sensor" label="@Strings.menu_sensor"></menu-item>
 </menu>
