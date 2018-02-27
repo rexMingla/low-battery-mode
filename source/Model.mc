@@ -14,7 +14,7 @@ class Model
     hidden var _speedConversion;
 
     // leave off remaining time for now..
-    hidden var _views = [VIEW_TIME_OF_DAY, VIEW_TIME, VIEW_DISTANCE, VIEW_BATTERY_PERCENTAGE, VIEW_BATTERY_REMAINING];
+    hidden var _views = [VIEW_TIME_OF_DAY, VIEW_TIME, VIEW_DISTANCE, VIEW_BATTERY_PERCENTAGE];
     hidden var _currentViewIndex;
 
     hidden var _gpsRefreshInfo;
