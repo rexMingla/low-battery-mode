@@ -72,11 +72,6 @@ class Model
         _isRunning = false;
     }
 
-    function resume() {
-        _session.start();
-        _isRunning = true;
-    }
-
     function startLap() {
         _session.addLap();
     }

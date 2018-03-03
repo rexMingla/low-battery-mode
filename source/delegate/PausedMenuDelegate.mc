@@ -16,7 +16,7 @@ module delegate {
         // Handle the menu input
         function onMenuItem(item) {
             if (item == :resume) {
-                _controller.resume();
+                _controller.start();
                 return true;
             } else if (item == :save) {
                 _controller.save();
