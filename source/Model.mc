@@ -141,7 +141,7 @@ class Model
     }
 
     // sensor and gps callbacks
-    private function noOp(info) {
+    function noOp(info) {
     }
 
     private function printDebug(message) {

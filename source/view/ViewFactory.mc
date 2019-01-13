@@ -8,6 +8,10 @@ using data.Formatter as Formatter;
 module view {
     class ViewFactory extends Ui.View {
 
+        function initialize() {
+            View.initialize();
+        }
+
         public static function createView(index) {
             switch(index)
             {
