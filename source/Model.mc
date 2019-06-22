@@ -48,14 +48,20 @@ class Model
         _isRunning = false;
         _currentViewIndex = 0;
 
-        setActivity(ActivityRecording.SPORT_RUNNING);
+        var activity = Application.getApp().getProperty("activity");
+        setActivity(activity != null ? activity : ActivityRecording.SPORT_RUNNING);
     }
 
     // config.. activity, gps, sensor setup
     function setActivity(activity) {
         _activity = activity;
         Sensor.setEnabledSensors(mAllSensorsByActivityType[_activity]);
+        Application.getApp().setProperty("activity", _activity);
         onBatteryProfileChanged();
+    }
+
+    function getActivity() {
+        return _activity;
     }
 
     // session management

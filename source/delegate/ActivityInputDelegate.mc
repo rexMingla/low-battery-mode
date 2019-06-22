@@ -6,27 +6,28 @@ using Toybox.Timer;
 // This delegate handles input for the Menu pushed when the user
 // selects the sport
 module delegate {
-    class ActivityMenuDelegate extends Ui.MenuInputDelegate {
+    class ActivityInputDelegate extends Ui.Menu2InputDelegate {
 
         private var _controller;
 
         function initialize() {
-            MenuInputDelegate.initialize();
+            Menu2InputDelegate.initialize();
             _controller = Application.getApp().getController();
         }
 
         // Handle the menu input
-        function onMenuItem(item) {
-            if (item == :run) {
+        function onSelect(item) {
+            var id = item.getId();
+            if (id == :run) {
                 _controller.setActivity(ActivityRecording.SPORT_RUNNING);
                 return true;
-            } else if (item == :bike) {
+            } else if (id == :bike) {
                 _controller.setActivity(ActivityRecording.SPORT_CYCLING);
                 return true;
-            } else if (item == :swim) {
+            } else if (id == :swim) {
                 _controller.setActivity(ActivityRecording.SPORT_SWIMMING);
                 return true;
-            } else {
+            } else if (id == :other) {
                 _controller.setActivity(ActivityRecording.SPORT_GENERIC);
                 return true;
             }

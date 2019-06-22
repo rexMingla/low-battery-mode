@@ -21,6 +21,7 @@ class Controller {
 
     function setActivity(activity) {
         _model.setActivity(activity);
+        WatchUi.popView(WatchUi.SLIDE_DOWN);
     }
 
     function start() {
@@ -76,7 +77,13 @@ class Controller {
     }
 
     function onSelectActivity() {
-        WatchUi.pushView(new Rez.Menus.ActivityMenu(), new delegate.ActivityMenuDelegate(), WatchUi.SLIDE_UP);
+        var activity = _model.getActivity();
+        var menu = new WatchUi.CheckboxMenu({:title=>"Select Activity"});
+        menu.addItem(new WatchUi.CheckboxMenuItem("Run", null, :run, activity == ActivityRecording.SPORT_RUNNING, {}));
+        menu.addItem(new WatchUi.CheckboxMenuItem("Bike", null, :bike, activity == ActivityRecording.SPORT_CYCLING, {}));
+        menu.addItem(new WatchUi.CheckboxMenuItem("Swim", null, :swim, activity == ActivityRecording.SPORT_SWIMMING, {}));
+        menu.addItem(new WatchUi.CheckboxMenuItem("Other", null, :other, activity == ActivityRecording.SPORT_GENERIC, {}));
+        WatchUi.pushView(menu, new delegate.ActivityInputDelegate(), WatchUi.SLIDE_UP);
     }
 
     function isRunning() {

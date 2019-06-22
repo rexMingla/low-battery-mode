@@ -1,6 +1,0 @@
-<menu id="ActivityMenu" title="@Strings.menu_activity_title">
-    <menu-item id="run" label="@Strings.menu_activity_run"></menu-item>
-    <menu-item id="bike" label="@Strings.menu_activity_bike"></menu-item>
-    <menu-item id="swim" label="@Strings.menu_activity_swim"></menu-item>
-    <menu-item id="other" label="@Strings.menu_activity_other"></menu-item>
-</menu>
