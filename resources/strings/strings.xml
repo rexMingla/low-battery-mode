@@ -14,6 +14,10 @@
     <string id="menu_activity_bike">Bike</string>
     <string id="menu_activity_swim">Swim</string>
     <string id="menu_activity_other">Other</string>
+    <string id="menu_activity_run_selected">*Run</string>
+    <string id="menu_activity_bike_selected">*Bike</string>
+    <string id="menu_activity_swim_selected">*Swim</string>
+    <string id="menu_activity_other_selected">*Other</string>
     
     <!-- labels -->
     <string id="view_time_of_day">Time of day</string>

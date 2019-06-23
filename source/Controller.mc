@@ -10,6 +10,7 @@ class Controller {
     hidden var _isShowingLapSummaryView;
     hidden var _isTonesOn;
     hidden var _isVibrateOn;
+    hidden var _hasCheckboxFeature;
 
     function initialize() {
         _timer = new Timer.Timer();
@@ -17,11 +18,14 @@ class Controller {
         var settings = System.getDeviceSettings();
         _isVibrateOn = settings.vibrateOn;
         _isTonesOn = settings.tonesOn;
+        _hasCheckboxFeature = hasCheckboxFeature();
     }
 
     function setActivity(activity) {
         _model.setActivity(activity);
-        WatchUi.popView(WatchUi.SLIDE_DOWN);
+        if (_hasCheckboxFeature) {
+            WatchUi.popView(WatchUi.SLIDE_DOWN);
+        }
     }
 
     function start() {
@@ -78,12 +82,30 @@ class Controller {
 
     function onSelectActivity() {
         var activity = _model.getActivity();
-        var menu = new WatchUi.CheckboxMenu({:title=>"Select Activity"});
-        menu.addItem(new WatchUi.CheckboxMenuItem("Run", null, :run, activity == ActivityRecording.SPORT_RUNNING, {}));
-        menu.addItem(new WatchUi.CheckboxMenuItem("Bike", null, :bike, activity == ActivityRecording.SPORT_CYCLING, {}));
-        menu.addItem(new WatchUi.CheckboxMenuItem("Swim", null, :swim, activity == ActivityRecording.SPORT_SWIMMING, {}));
-        menu.addItem(new WatchUi.CheckboxMenuItem("Other", null, :other, activity == ActivityRecording.SPORT_GENERIC, {}));
-        WatchUi.pushView(menu, new delegate.ActivityInputDelegate(), WatchUi.SLIDE_UP);
+        if (_hasCheckboxFeature) {
+            var menu = new WatchUi.CheckboxMenu({:title=>WatchUi.loadResource(Rez.Strings.menu_activity_title)});
+            menu.addItem(new WatchUi.CheckboxMenuItem(WatchUi.loadResource(Rez.Strings.menu_activity_run), null, ActivityRecording.SPORT_RUNNING, activity == ActivityRecording.SPORT_RUNNING, {}));
+            menu.addItem(new WatchUi.CheckboxMenuItem(WatchUi.loadResource(Rez.Strings.menu_activity_bike), null, ActivityRecording.SPORT_CYCLING, activity == ActivityRecording.SPORT_CYCLING, {}));
+            menu.addItem(new WatchUi.CheckboxMenuItem(WatchUi.loadResource(Rez.Strings.menu_activity_swim), null, ActivityRecording.SPORT_SWIMMING, activity == ActivityRecording.SPORT_SWIMMING, {}));
+            menu.addItem(new WatchUi.CheckboxMenuItem(WatchUi.loadResource(Rez.Strings.menu_activity_other), null, ActivityRecording.SPORT_GENERIC, activity == ActivityRecording.SPORT_GENERIC, {}));
+            WatchUi.pushView(menu, new delegate.ActivityInputDelegate(), WatchUi.SLIDE_UP);
+        } else {
+            var menu = new WatchUi.Menu();
+            menu.setTitle(WatchUi.loadResource(Rez.Strings.menu_activity_title));
+            menu.addItem(activity == ActivityRecording.SPORT_RUNNING
+                ? WatchUi.loadResource(Rez.Strings.menu_activity_run_selected)
+                : WatchUi.loadResource(Rez.Strings.menu_activity_run), ActivityRecording.SPORT_RUNNING);
+            menu.addItem(activity == ActivityRecording.SPORT_CYCLING
+                ? WatchUi.loadResource(Rez.Strings.menu_activity_bike_selected)
+                : WatchUi.loadResource(Rez.Strings.menu_activity_bike), ActivityRecording.SPORT_CYCLING);
+            menu.addItem(activity == ActivityRecording.SPORT_SWIMMING
+                ? WatchUi.loadResource(Rez.Strings.menu_activity_swim_selected)
+                : WatchUi.loadResource(Rez.Strings.menu_activity_swim), ActivityRecording.SPORT_SWIMMING);
+            menu.addItem(activity == ActivityRecording.SPORT_GENERIC
+                ? WatchUi.loadResource(Rez.Strings.menu_activity_other_selected)
+                : WatchUi.loadResource(Rez.Strings.menu_activity_other), ActivityRecording.SPORT_GENERIC);
+            WatchUi.pushView(menu, new delegate.OldActivityInputDelegate(), WatchUi.SLIDE_UP);
+        }
     }
 
     function isRunning() {
@@ -110,6 +132,12 @@ class Controller {
         _model.cycleView(offset);
         WatchUi.switchToView(view.ViewFactory.createView(_model.getCurrentViewIndex()), new delegate.MainDelegate(), WatchUi.SLIDE_DOWN);
         WatchUi.requestUpdate();
+    }
+
+    private function hasCheckboxFeature() {
+        var mySettings = System.getDeviceSettings();
+        var version = mySettings.monkeyVersion;
+        return version[0] > 3;
     }
 
     function performAttention(tone) {
