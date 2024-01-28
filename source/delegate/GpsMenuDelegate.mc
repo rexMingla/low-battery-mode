@@ -2,11 +2,10 @@ using Toybox.WatchUi as Ui;
 using Toybox.System as Sys;
 using Toybox.Application;
 using Toybox.Timer;
+using Toybox.Position;
 
-// This delegate handles input for the Menu pushed when the user
-// selects the sport
 module delegate {
-    class ActivityInputDelegate extends Ui.Menu2InputDelegate {
+    class GpsMenuDelegate extends Ui.Menu2InputDelegate {
 
         private var _controller;
         private var _parentMenuItem as Ui.MenuItem;
@@ -19,9 +18,9 @@ module delegate {
 
         // Handle the menu input
         function onSelect(item) {
-            var id = item.getId();
-            _controller.setActivity(id);
-            _parentMenuItem.setSubLabel(_controller.getActivityName());
+            var value = item.getId();
+            _controller.setGpsSettings(value);
+            _parentMenuItem.setSubLabel(_controller.getGpsSettingsName());
             return false;
         }
     }

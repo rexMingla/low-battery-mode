@@ -3,7 +3,6 @@ using Toybox.Application;
 using Toybox.Timer;
 using Toybox.Lang;
 using Toybox.Graphics;
-using data.Formatter as Formatter;
 
 module view {
     class AbstractView extends Ui.View {

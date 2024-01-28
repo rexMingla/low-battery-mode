@@ -3,6 +3,7 @@ using Toybox.Application;
 using Toybox.WatchUi;
 using Toybox.System;
 using Toybox.Attention;
+using Toybox.Position;
 
 class Controller {
     hidden var _model;
@@ -10,7 +11,6 @@ class Controller {
     hidden var _isShowingLapSummaryView;
     hidden var _isTonesOn;
     hidden var _isVibrateOn;
-    hidden var _hasCheckboxFeature;
 
     function initialize() {
         _timer = new Timer.Timer();
@@ -18,19 +18,17 @@ class Controller {
         var settings = System.getDeviceSettings();
         _isVibrateOn = settings.vibrateOn;
         _isTonesOn = settings.tonesOn;
-        _hasCheckboxFeature = WatchUi has :Menu2;
     }
 
     function setActivity(activity) {
         _model.setActivity(activity);
-        if (_hasCheckboxFeature) {
-            WatchUi.popView(WatchUi.SLIDE_DOWN);
-        }
+        WatchUi.popView(WatchUi.SLIDE_DOWN);
     }
 
     function start() {
         performAttention(Attention has :TONE_START ? Attention.TONE_START : null);
         _model.start();
+        WatchUi.popView(WatchUi.SLIDE_DOWN);
         WatchUi.requestUpdate();
     }
 
@@ -67,45 +65,112 @@ class Controller {
             start();
         } else {
             stop();
-            WatchUi.pushView(new Rez.Menus.PausedMenu(), new delegate.PausedMenuDelegate(), WatchUi.SLIDE_UP);
+            onShowPauseMenu();
         }
         WatchUi.requestUpdate();
     }
 
+    function onShowPauseMenu() {
+        var menu = new WatchUi.Menu2({:title=>WatchUi.loadResource(Rez.Strings.menu_pause_title)});
+        menu.addItem(new WatchUi.MenuItem(WatchUi.loadResource(Rez.Strings.menu_resume), null, :resume, {}));
+        menu.addItem(new WatchUi.MenuItem(WatchUi.loadResource(Rez.Strings.menu_save), null, :save, {}));
+
+        var gpsSettingsMenuItem = null;
+        if (_model.hasGpsSettings()) {
+            gpsSettingsMenuItem = new WatchUi.MenuItem(WatchUi.loadResource(Rez.Strings.menu_select_gps_settings), getGpsSettingsName(), :select_gps_settings, {});
+            menu.addItem(gpsSettingsMenuItem);
+            menu.addItem(new WatchUi.MenuItem(WatchUi.loadResource(Rez.Strings.menu_discard), null, :discard, {}));
+        }
+        WatchUi.pushView(menu, new delegate.PausedMenuDelegate(gpsSettingsMenuItem), WatchUi.SLIDE_UP);
+    }
+
+    function onShowGpsSettings(parentMenuItem as WatchUi.MenuItem) {
+        var menu = new WatchUi.Menu2({:title=>WatchUi.loadResource(Rez.Strings.menu_select_gps_settings)});
+
+        var setting = _model.getGpsConfigOrConstellation();
+
+        if (Position has :hasConfigurationSupport) {
+            if ((Position has :CONFIGURATION_GPS) && Position.hasConfigurationSupport(Position.CONFIGURATION_GPS)) {
+                menu.addItem(new WatchUi.ToggleMenuItem(WatchUi.loadResource(Rez.Strings.gps_config_gps), null,
+                    Model.WORKAROUND_CONFIGURATION_GPS, setting == Model.WORKAROUND_CONFIGURATION_GPS, {}));
+            }
+            if ((Position has :CONFIGURATION_GPS_BEIDOU) && Position.hasConfigurationSupport(Position.CONFIGURATION_GPS_BEIDOU)) {
+                menu.addItem(new WatchUi.ToggleMenuItem(WatchUi.loadResource(Rez.Strings.gps_config_gps_beidou_L1), null,
+                    Model.WORKAROUND_CONFIGURATION_GPS_BEIDOU, setting == Model.WORKAROUND_CONFIGURATION_GPS_BEIDOU, {}));
+            }
+            if ((Position has :CONFIGURATION_GPS_GLONASS) && Position.hasConfigurationSupport(Position.CONFIGURATION_GPS_GLONASS)) {
+                menu.addItem(new WatchUi.ToggleMenuItem(WatchUi.loadResource(Rez.Strings.gps_config_gps_glonass), null,
+                    Model.WORKAROUND_CONFIGURATION_GPS_GLONASS, setting == Model.WORKAROUND_CONFIGURATION_GPS_GLONASS, {}));
+            }
+            if ((Position has :CONFIGURATION_GPS_GLONASS_GALILEO_BEIDOU_L1) && Position.hasConfigurationSupport(Position.CONFIGURATION_GPS_GLONASS_GALILEO_BEIDOU_L1)) {
+                menu.addItem(new WatchUi.ToggleMenuItem(WatchUi.loadResource(Rez.Strings.gps_config_gps_glonass_beidou_L1), null,
+                    Model.WORKAROUND_CONFIGURATION_GPS_GLONASS_GALILEO_BEIDOU_L1, setting == Model.WORKAROUND_CONFIGURATION_GPS_GLONASS_GALILEO_BEIDOU_L1, {}));
+            }
+            if ((Position has :CONFIGURATION_GPS_GLONASS_GALILEO_BEIDOU_L1_L5) && Position.hasConfigurationSupport(Position.CONFIGURATION_GPS_GLONASS_GALILEO_BEIDOU_L1_L5)) {
+                menu.addItem(new WatchUi.ToggleMenuItem(WatchUi.loadResource(Rez.Strings.gps_config_gps_glonass_beidou_L1_L5), null,
+                    Model.WORKAROUND_CONFIGURATION_GPS_GLONASS_GALILEO_BEIDOU_L1_L5, setting == Model.WORKAROUND_CONFIGURATION_GPS_GLONASS_GALILEO_BEIDOU_L1_L5, {}));
+            }
+            if ((Position has :CONFIGURATION_GPS_GALILEO) && Position.hasConfigurationSupport(Position.CONFIGURATION_GPS_GALILEO)) {
+                menu.addItem(new WatchUi.ToggleMenuItem(WatchUi.loadResource(Rez.Strings.gps_config_gps_galileo), null,
+                    Model.WORKAROUND_CONFIGURATION_GPS_GALILEO, setting == Model.WORKAROUND_CONFIGURATION_GPS_GALILEO, {}));
+            }
+        } else {
+            if (Position has :CONSTELLATION_GPS) {
+                menu.addItem(new WatchUi.ToggleMenuItem(WatchUi.loadResource(Rez.Strings.gps_config_gps), null,
+                    Position.WORKAROUND_CONSTELLATION_GPS, setting == Position.WORKAROUND_CONSTELLATION_GPS, {}));
+            }
+            if (Position has :CONSTELLATION_GLONASS) {
+                menu.addItem(new WatchUi.ToggleMenuItem(WatchUi.loadResource(Rez.Strings.gps_config_gps_glonass), null,
+                    Position.CONSTELLATION_GLONASS, setting == Position.CONSTELLATION_GLONASS, {}));
+            }
+            if (Position has :CONSTELLATION_GALILEO) {
+                menu.addItem(new WatchUi.ToggleMenuItem(WatchUi.loadResource(Rez.Strings.gps_config_gps_galileo), null,
+                    Position.CONSTELLATION_GALILEO, setting == Position.CONSTELLATION_GALILEO, {}));
+            }
+        }
+
+        WatchUi.pushView(menu, new delegate.GpsMenuDelegate(parentMenuItem), WatchUi.SLIDE_UP);
+    }
+
+    function setGpsSettings(mode) {
+        _model.setGpsConfigOrConstellation(mode);
+        WatchUi.popView(WatchUi.SLIDE_DOWN);
+    }
+
+    function getGpsSettingsName() {
+        return _model.getGpsSettingsName();
+    }
+
     function onStartActivity() {
-        WatchUi.pushView(new Rez.Menus.StartMenu(), new delegate.StartMenuDelegate(), WatchUi.SLIDE_UP);
+        var menu = new WatchUi.Menu2({:title=>WatchUi.loadResource(Rez.Strings.menu_start_title)});
+        menu.addItem(new WatchUi.MenuItem(WatchUi.loadResource(Rez.Strings.menu_start), null, :start, {}));
+        var activityMenuItem = new WatchUi.MenuItem(WatchUi.loadResource(Rez.Strings.menu_select_activity), getActivityName(), :select_activity, {});
+        menu.addItem(activityMenuItem);
+        
+        var gpsSettingsMenuItem = null;
+        if (_model.hasGpsSettings()) {
+            gpsSettingsMenuItem = new WatchUi.MenuItem(WatchUi.loadResource(Rez.Strings.menu_select_gps_settings), getGpsSettingsName(), :select_gps_settings, {});
+            menu.addItem(gpsSettingsMenuItem);
+        }
+        WatchUi.pushView(menu, new delegate.StartMenuDelegate(activityMenuItem, gpsSettingsMenuItem), WatchUi.SLIDE_UP);
+    }
+
+    function getActivityName() {
+        return _model.getActivityName();
     }
 
     function onResumeActivity() {
         cycleView(0);
     }
 
-    function onSelectActivity() {
+    function onSelectActivity(parentMenuItem as WatchUi.MenuItem) {
         var activity = _model.getActivity();
-        if (_hasCheckboxFeature) {
-            var menu = new WatchUi.Menu2({:title=>WatchUi.loadResource(Rez.Strings.menu_activity_title)});
-            menu.addItem(new WatchUi.ToggleMenuItem(WatchUi.loadResource(Rez.Strings.menu_activity_run), null, ActivityRecording.SPORT_RUNNING, activity == ActivityRecording.SPORT_RUNNING, {}));
-            menu.addItem(new WatchUi.ToggleMenuItem(WatchUi.loadResource(Rez.Strings.menu_activity_bike), null, ActivityRecording.SPORT_CYCLING, activity == ActivityRecording.SPORT_CYCLING, {}));
-            menu.addItem(new WatchUi.ToggleMenuItem(WatchUi.loadResource(Rez.Strings.menu_activity_swim), null, ActivityRecording.SPORT_SWIMMING, activity == ActivityRecording.SPORT_SWIMMING, {}));
-            menu.addItem(new WatchUi.ToggleMenuItem(WatchUi.loadResource(Rez.Strings.menu_activity_other), null, ActivityRecording.SPORT_GENERIC, activity == ActivityRecording.SPORT_GENERIC, {}));
-            WatchUi.pushView(menu, new delegate.ActivityInputDelegate(), WatchUi.SLIDE_UP);
-        } else {
-            var menu = new WatchUi.Menu();
-            menu.setTitle(WatchUi.loadResource(Rez.Strings.menu_activity_title));
-            menu.addItem(activity == ActivityRecording.SPORT_RUNNING
-                ? WatchUi.loadResource(Rez.Strings.menu_activity_run_selected)
-                : WatchUi.loadResource(Rez.Strings.menu_activity_run), ActivityRecording.SPORT_RUNNING);
-            menu.addItem(activity == ActivityRecording.SPORT_CYCLING
-                ? WatchUi.loadResource(Rez.Strings.menu_activity_bike_selected)
-                : WatchUi.loadResource(Rez.Strings.menu_activity_bike), ActivityRecording.SPORT_CYCLING);
-            menu.addItem(activity == ActivityRecording.SPORT_SWIMMING
-                ? WatchUi.loadResource(Rez.Strings.menu_activity_swim_selected)
-                : WatchUi.loadResource(Rez.Strings.menu_activity_swim), ActivityRecording.SPORT_SWIMMING);
-            menu.addItem(activity == ActivityRecording.SPORT_GENERIC
-                ? WatchUi.loadResource(Rez.Strings.menu_activity_other_selected)
-                : WatchUi.loadResource(Rez.Strings.menu_activity_other), ActivityRecording.SPORT_GENERIC);
-            WatchUi.pushView(menu, new delegate.OldActivityInputDelegate(), WatchUi.SLIDE_UP);
-        }
+        var menu = new WatchUi.Menu2({:title=>WatchUi.loadResource(Rez.Strings.menu_activity_title)});
+        menu.addItem(new WatchUi.ToggleMenuItem(WatchUi.loadResource(Rez.Strings.menu_activity_run), null, ActivityRecording.SPORT_RUNNING, activity == ActivityRecording.SPORT_RUNNING, {}));
+        menu.addItem(new WatchUi.ToggleMenuItem(WatchUi.loadResource(Rez.Strings.menu_activity_bike), null, ActivityRecording.SPORT_CYCLING, activity == ActivityRecording.SPORT_CYCLING, {}));
+        menu.addItem(new WatchUi.ToggleMenuItem(WatchUi.loadResource(Rez.Strings.menu_activity_swim), null, ActivityRecording.SPORT_SWIMMING, activity == ActivityRecording.SPORT_SWIMMING, {}));
+        menu.addItem(new WatchUi.ToggleMenuItem(WatchUi.loadResource(Rez.Strings.menu_activity_other), null, ActivityRecording.SPORT_GENERIC, activity == ActivityRecording.SPORT_GENERIC, {}));
+        WatchUi.pushView(menu, new delegate.ActivityInputDelegate(parentMenuItem), WatchUi.SLIDE_UP);
     }
 
     function isRunning() {

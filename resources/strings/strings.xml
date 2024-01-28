@@ -2,22 +2,21 @@
     <string id="AppName">Low Power Recorder</string>
 
     <!-- menus -->
+    <string id="menu_start_title">Start</string>
     <string id="menu_start">Start</string>
     <string id="menu_select_activity">Select Activity</string>
 
+    <string id="menu_pause_title">Paused</string>
     <string id="menu_resume">Resume</string>
     <string id="menu_save">Save</string>
     <string id="menu_discard">Discard</string>
+    <string id="menu_select_gps_settings">GPS Settings</string>
 
     <string id="menu_activity_title">Select Activity</string>
     <string id="menu_activity_run">Run</string>
     <string id="menu_activity_bike">Bike</string>
     <string id="menu_activity_swim">Swim</string>
     <string id="menu_activity_other">Other</string>
-    <string id="menu_activity_run_selected">*Run</string>
-    <string id="menu_activity_bike_selected">*Bike</string>
-    <string id="menu_activity_swim_selected">*Swim</string>
-    <string id="menu_activity_other_selected">*Other</string>
     
     <!-- labels -->
     <string id="view_time_of_day">Time of day</string>
@@ -30,7 +29,16 @@
     <string id="gps_good">Good</string> 
     <string id="gps_ok">OK</string>
     <string id="gps_poor">Poor</string>
-    
+
+    <!-- gps labels -->
+    <!-- https://developer.garmin.com/connect-iq/api-docs/Toybox/Position.html -->
+    <string id="gps_config_gps">Normal (GPS Only)</string> 
+    <string id="gps_config_gps_glonass">GPS + GLONASS</string> 
+    <string id="gps_config_gps_galileo">GPS + GALILEO</string>
+    <string id="gps_config_gps_beidou_L1">GPS + BEIDOU L1</string>
+    <string id="gps_config_gps_glonass_beidou_L1">GPS + GAL + BEIDOU L1</string>
+    <string id="gps_config_gps_glonass_beidou_L1_L5">GPS + GAL + BEIDOU L1-5</string> 
+
     <!-- lap labels -->
     <string id="welcome_format">GPS Signal: $1$\nPress Start To Begin</string>
     <string id="resume_format">GPS Signal: $1$\nPress Start To Resume</string>
