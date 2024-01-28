@@ -117,15 +117,15 @@ class Controller {
         } else {
             if (Position has :CONSTELLATION_GPS) {
                 menu.addItem(new WatchUi.ToggleMenuItem(WatchUi.loadResource(Rez.Strings.gps_config_gps), null,
-                    Position.WORKAROUND_CONSTELLATION_GPS, setting == Position.WORKAROUND_CONSTELLATION_GPS, {}));
+                    Model.WORKAROUND_CONSTELLATION_GPS, setting == Model.WORKAROUND_CONSTELLATION_GPS, {}));
             }
             if (Position has :CONSTELLATION_GLONASS) {
                 menu.addItem(new WatchUi.ToggleMenuItem(WatchUi.loadResource(Rez.Strings.gps_config_gps_glonass), null,
-                    Position.CONSTELLATION_GLONASS, setting == Position.CONSTELLATION_GLONASS, {}));
+                    Model.WORKAROUND_CONSTELLATION_GLONASS, setting == Model.WORKAROUND_CONSTELLATION_GLONASS, {}));
             }
             if (Position has :CONSTELLATION_GALILEO) {
                 menu.addItem(new WatchUi.ToggleMenuItem(WatchUi.loadResource(Rez.Strings.gps_config_gps_galileo), null,
-                    Position.CONSTELLATION_GALILEO, setting == Position.CONSTELLATION_GALILEO, {}));
+                    Model.WORKAROUND_CONSTELLATION_GALILEO, setting == Model.WORKAROUND_CONSTELLATION_GALILEO, {}));
             }
         }
 
