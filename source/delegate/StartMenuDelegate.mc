@@ -28,6 +28,8 @@ module delegate {
                 _controller.onSelectActivity(_activityMenuItem);
             } else if (id == :select_gps_settings) {
                 _controller.onShowGpsSettings(_gpsSettingsMenuItem);
+            } else if (id == :quit) {
+                _controller.onExit();
             }
         }
     }

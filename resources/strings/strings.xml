@@ -5,6 +5,7 @@
     <string id="menu_start_title">Start</string>
     <string id="menu_start">Start</string>
     <string id="menu_select_activity">Select Activity</string>
+    <string id="menu_quit">Quit</string>
 
     <string id="menu_pause_title">Paused</string>
     <string id="menu_resume">Resume</string>

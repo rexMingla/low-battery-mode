@@ -74,13 +74,12 @@ class Controller {
         var menu = new WatchUi.Menu2({:title=>WatchUi.loadResource(Rez.Strings.menu_pause_title)});
         menu.addItem(new WatchUi.MenuItem(WatchUi.loadResource(Rez.Strings.menu_resume), null, :resume, {}));
         menu.addItem(new WatchUi.MenuItem(WatchUi.loadResource(Rez.Strings.menu_save), null, :save, {}));
-
         var gpsSettingsMenuItem = null;
         if (_model.hasGpsSettings()) {
             gpsSettingsMenuItem = new WatchUi.MenuItem(WatchUi.loadResource(Rez.Strings.menu_select_gps_settings), getGpsSettingsName(), :select_gps_settings, {});
             menu.addItem(gpsSettingsMenuItem);
-            menu.addItem(new WatchUi.MenuItem(WatchUi.loadResource(Rez.Strings.menu_discard), null, :discard, {}));
         }
+        menu.addItem(new WatchUi.MenuItem(WatchUi.loadResource(Rez.Strings.menu_discard), null, :discard, {}));
         WatchUi.pushView(menu, new delegate.PausedMenuDelegate(gpsSettingsMenuItem), WatchUi.SLIDE_UP);
     }
 
@@ -152,6 +151,7 @@ class Controller {
             gpsSettingsMenuItem = new WatchUi.MenuItem(WatchUi.loadResource(Rez.Strings.menu_select_gps_settings), getGpsSettingsName(), :select_gps_settings, {});
             menu.addItem(gpsSettingsMenuItem);
         }
+        menu.addItem(new WatchUi.MenuItem(WatchUi.loadResource(Rez.Strings.menu_quit), null, :quit, {}));
         WatchUi.pushView(menu, new delegate.StartMenuDelegate(activityMenuItem, gpsSettingsMenuItem), WatchUi.SLIDE_UP);
     }
 
