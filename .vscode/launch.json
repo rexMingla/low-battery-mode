@@ -23,7 +23,7 @@
             "request": "launch",
             "name": "Run Fenix",
             "runTests": false,
-            "device": "fenix6pro"
+            "device": "fenix843mm"
         },
         {
             "type": "monkeyc",
