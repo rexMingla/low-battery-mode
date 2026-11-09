@@ -5,6 +5,7 @@
 //
 
 using Toybox.WatchUi;
+using Toybox.Lang;
 
 module delegate {
     // This handles input while the progress bar is up
@@ -14,7 +15,7 @@ module delegate {
             BehaviorDelegate.initialize();
         }
 
-        function onBack() {
+        function onBack() as Lang.Boolean {
             return true;
         }
     }

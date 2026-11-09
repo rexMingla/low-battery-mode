@@ -1,4 +1,5 @@
 {
+    "monkeyC.typeCheckLevel": "Strict",
     "monkeyC.testDevices": [
         "fr935"
     ],

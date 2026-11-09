@@ -1,26 +1,26 @@
+import Toybox.Lang;
 using Toybox.WatchUi as Ui;
-using Toybox.System as Sys;
 using Toybox.Application;
-using Toybox.Timer;
 
 module delegate {
     class PausedMenuDelegate extends Ui.Menu2InputDelegate {
 
-        private var _controller;
-        private var _gpsSettingsMenuItem as Ui.MenuItem;
+        private var _controller as Controller;
+        private var _gpsSettingsMenuItem as Ui.MenuItem or Null;
 
-        function initialize(gpsSettingsMenuItem as Ui.MenuItem) {
+        function initialize(gpsSettingsMenuItem as Ui.MenuItem or Null) {
             Menu2InputDelegate.initialize();
-            _controller = Application.getApp().getController();
+            _controller = (Application.getApp() as BatteryApp).getController();
             _gpsSettingsMenuItem = gpsSettingsMenuItem;
         }
 
-        function onBack() {
+        // Backing out of the menu resumes the activity
+        function onBack() as Void {
             _controller.start();
         }
 
         // Handle the menu input
-        function onSelect(item) {
+        function onSelect(item as Ui.MenuItem) as Void {
             var id = item.getId();
             if (id == :resume) {
                 _controller.start();

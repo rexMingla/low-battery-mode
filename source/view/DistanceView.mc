@@ -1,3 +1,4 @@
+import Toybox.Lang;
 using Toybox.WatchUi as Ui;
 
 module view {
@@ -7,12 +8,12 @@ module view {
             AbstractView.initialize();
         }
 
-        protected function getValue() {
+        protected function getValue() as String {
            return data.Formatter.get1dpFloat(_model.getDistance());
         }
 
-        protected function getLabel() {
-           return Ui.loadResource(Rez.Strings.view_dist);
+        protected function getLabel() as String {
+           return Ui.loadResource(Rez.Strings.view_dist) as String;
         }
     }
 }
