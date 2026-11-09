@@ -1,3 +1,4 @@
+import Toybox.Lang;
 using Toybox.WatchUi as Ui;
 
 module view {
@@ -7,12 +8,12 @@ module view {
             AbstractView.initialize();
         }
 
-        protected function getValue() {
+        protected function getValue() as String {
            return data.Formatter.getInt(_model.getBatteryPercentage());
         }
 
-        protected function getLabel() {
-           return Ui.loadResource(Rez.Strings.view_battery_percentage);
+        protected function getLabel() as String {
+           return Ui.loadResource(Rez.Strings.view_battery_percentage) as String;
         }
     }
 }
