@@ -13,6 +13,7 @@ class Model
     hidden var _session;
     hidden var _activity;
     hidden var _gpsConfigOrConstellation;
+    hidden var _gpsOptions;
     hidden var _hasPositionSupport;
     hidden var _isRunning;
     hidden var _speedConversion;
@@ -100,6 +101,7 @@ class Model
 
     // session management
     function start() {
+        enableGps();
         if (_session == null) {
             _session = ActivityRecording.createSession({:sport=>_activity, :name=>"Low Battery Mode"});
         }
@@ -244,7 +246,7 @@ class Model
             _gpsConfigOrConstellation = configOrConstellation;
             return options; 
         }
-        return Position.LOCATION_CONTINUOUS;
+        return options;
     }
 
     function hasGpsSettings() {
@@ -262,10 +264,19 @@ class Model
     }
 
     function setGpsConfigOrConstellation(configOrConstellation) {
-        var options = setupGpsOptions(configOrConstellation);
+        _gpsOptions = setupGpsOptions(configOrConstellation);
         Application.getApp().setProperty("gpsConfigOrConstellation", _gpsConfigOrConstellation);
-        Position.enableLocationEvents(options, method(:noOp));
+        enableGps();
         onBatteryProfileChanged();
+    }
+
+    // Location events are disabled by the system whenever the app goes inactive
+    // (e.g. screen off), which stops the session recording a track/map.
+    // Re-assert them when the app becomes active and when a session (re)starts.
+    function enableGps() {
+        if (_gpsOptions != null) {
+            Position.enableLocationEvents(_gpsOptions, method(:noOp));
+        }
     }
 
     function getGpsConfigOrConstellation() {

@@ -8,14 +8,23 @@ class BatteryApp extends App.AppBase {
 
     function initialize() {
         AppBase.initialize();
+    }
+
+    // Model and Controller call Application.getApp(), so create them once the app is up
+    // rather than in initialize().
+    function onStart(state) {
         _model = new $.Model();
         _controller = new $.Controller();
     }
 
-    function onStart(state) {
+    function onStop(state) {
     }
 
-    function onStop(state) {
+    // Position events are switched off by the system while inactive; turn them back on.
+    function onActive(state) {
+        if (_model != null) {
+            _model.enableGps();
+        }
     }
 
     function getInitialView() {
